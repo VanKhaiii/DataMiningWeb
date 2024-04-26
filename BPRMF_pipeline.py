@@ -64,7 +64,7 @@ class BPRMFPipeline:
             top_5_values_per_row.append(top_5_values)
             top_5_indices_per_row.append(top_5_indices)
         
-        return top_5_indices_per_row
+        return top_5_indices_per_row, user_ids
     
     def evaluate(self, model, dataloader, Ks, device):
         test_batch_size = dataloader.test_batch_size

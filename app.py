@@ -23,9 +23,14 @@ async def predict():
 
     pipeline = BPRMFPipeline()
     
-    top_courses = extract_course(pipeline(args))
-
-    return  extract_course_info(top_courses)
-
+    top_5_courses, user_ids = pipeline(args)
+    top_5_courses = extract_course(top_5_courses)
+    
+    # Nếu đề xuất top k khóa học
+    # k = 3
+    # top_5_courses = [course[:k] for course in top_5_courses]
+    
+    return extract_course_info(top_5_courses, user_ids)
+    
 if __name__ == "__main__":
     uvicorn.run("app:app", host="127.0.0.1", port=5000, reload=True)
