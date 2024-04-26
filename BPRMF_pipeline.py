@@ -27,6 +27,9 @@ class BPRMFPipeline:
         
         # load data
         data = DataLoaderBPRMF(args, logging)
+        test_user_dict = data.test_user_dict
+        user_ids = list(test_user_dict.keys())
+        print(len(user_ids))
         
         model = BPRMF(args, data.n_users, data.n_items)
         model = load_model(model, args.pretrain_model_path)
@@ -42,6 +45,12 @@ class BPRMFPipeline:
         
         print('CF Evaluation: Precision [{:.4f}, {:.4f}], Recall [{:.4f}, {:.4f}], NDCG [{:.4f}, {:.4f}]'.format(
         metrics_dict[k_min]['precision'], metrics_dict[k_max]['precision'], metrics_dict[k_min]['recall'], metrics_dict[k_max]['recall'], metrics_dict[k_min]['ndcg'], metrics_dict[k_max]['ndcg']))
+        
+        # Kiểm tra user có đăng kí khóa học chưa, nếu rồi thì gán khóa học đó là -999 (tránh khuyến nghị các khóa học đã học rồi)
+        user_course_dict = np.load("src\\datasets\\user_enroll_course.npy", allow_pickle=True).item()
+        for i in range(0, len(user_ids)):
+            for course_ids in user_course_dict[user_ids[i]]:
+                cf_scores[i, course_ids] = -999
         
         top_5_values_per_row = []
         top_5_indices_per_row = []
