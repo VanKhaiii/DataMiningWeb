@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from BPRMF_pipeline import BPRMFPipeline
 from src.utils.extract_course import extract_course
+from src.utils.extract_course_info import extract_course_info
 from src.parser.parser_bprmf import *
 import uvicorn
 
@@ -21,8 +22,10 @@ async def predict():
     args.pretrain_model_path = 'src\\pretrained_model\\model_BPRMF.pth'
 
     pipeline = BPRMFPipeline()
+    
+    top_courses = extract_course(pipeline(args))
 
-    return {"result": extract_course(pipeline(args))}
+    return  extract_course_info(top_courses)
 
 if __name__ == "__main__":
     uvicorn.run("app:app", host="127.0.0.1", port=5000, reload=True)
